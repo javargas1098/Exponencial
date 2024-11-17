@@ -4,6 +4,7 @@ from app.services.config import load_config
 from app.services.utils import format_text, format_number, generate_consecutive_number
 from app.services.siesa_client import call_siesa_client
 
+
 def generate_xml(id_cia, user, clave, lines):
     """
     Generates the final XML content from the header, body, and footer.
@@ -22,7 +23,6 @@ def generate_xml(id_cia, user, clave, lines):
             "</Importar>"
     )
 
-
     try:
         with open("generated_data.xml", 'w', encoding='utf-8') as file:
             file.write(xml_content)
@@ -32,7 +32,7 @@ def generate_xml(id_cia, user, clave, lines):
 
     try:
         # Call the SOAP service with the provided data and flag
-        tipo_error=0
+        tipo_error = 0
         response = call_siesa_client(xml_content, tipo_error)
         return {"response": response}
     except Exception as e:
@@ -54,7 +54,7 @@ class DataProcessor:
         user = self.config['Usuario']
         clave = self.config['Clave']
 
-        first_line = f"{generate_consecutive_number(1, 7)}0000{ '00'}01{'001'}"
+        first_line = f"{generate_consecutive_number(1, 7)}0000{'00'}01{'001'}"
         consecutive_file = 2
         consecutive_doc = 1
         # Initialize an empty list to hold all the Linea elements
@@ -67,7 +67,7 @@ class DataProcessor:
         consecutive_file = self.process_movements(consecutive_file, consecutive_doc, lines)
 
         # Final Line
-        last_line =  f"{generate_consecutive_number(consecutive_file, 7)}9999{'00'}01{'001'}"
+        last_line = f"{generate_consecutive_number(consecutive_file, 7)}9999{'00'}01{'001'}"
         lines.append(f"<Linea>{last_line}</Linea>")
 
         # Generate Final XML content
