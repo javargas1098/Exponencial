@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from app.models import RequestData
 from app.services.data_processor import DataProcessor
 
@@ -12,9 +12,14 @@ async def process_data_endpoint(request_data: RequestData):
     Endpoint to process request data and return an XML response.
     """
     # Create DataProcessor instance and process the data
-    print(" ekldkndaeklnd")
-    processor = DataProcessor(request_data)
-    xml_content = processor.process()  # This will generate and save the XML
+    
 
     # Return the XML content as part of the response
-    return {"status": "success", "xml_data": xml_content}
+    
+    try:
+        processor = DataProcessor(request_data)
+        xml_content = processor.process() 
+        # This will generate and save the XML
+        return {"status": "success", "xml_response": xml_content}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

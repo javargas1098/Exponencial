@@ -7,6 +7,7 @@ class DocumentoItem(BaseModel):
     ID_TIPO_DOCTO: str  # ALF (EAT o EGC=Entradas)
     FECHA: str  # ALF
     NOTAS: str  # ALF
+    ID_TERCERO: str
     DOCTO_ALTERNO: str  # ALF
 
 # Define the Pydantic model for "MOVIMIENTO"
@@ -16,7 +17,7 @@ class MovimientoItem(BaseModel):
     CONSEC_DOCTO: str  # NUM
     NRO_REGISTRO: str  # NUM
     ID_BODEGA: str  # ALF
-    ID_MOTIVO: str  # ALF
+    ID_MOTIVO: str  # ALFs
     ID_CO_MOVTO: str  # ALF
     ID_CCOSTO_MOVTO: str  # ALF
     ID_UNIDAD_MEDIDA: str  # ALF
@@ -26,7 +27,7 @@ class MovimientoItem(BaseModel):
     DESC_VARIBLE: str  # ALF
     UM_INVENTARIO: str  # ALF
     ID_ITEM: str  # NUM
-    UN: str  # ALF
+    ID_UN: str  # ALF
 
 # Define the main model for the request body
 class RequestData(BaseModel):

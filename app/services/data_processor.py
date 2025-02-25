@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 
 from app.services.config import load_config
-from app.services.utils import format_text, format_number, generate_consecutive_number
+from app.services.utils import format_text, format_number, generate_consecutive_number, convert_date_to_custom_format
 from app.services.siesa_client import call_siesa_client
 
 
@@ -13,7 +13,7 @@ def generate_xml(id_cia, user, clave, lines):
     print(" llegue acaca")
     xml_content = (
             "<Importar xmlns:si=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\n"
-            f"<NombreConexion>UnoEE</NombreConexion>\n"
+            f"<NombreConexion>Pruebas</NombreConexion>\n"
             f"<IdCia>{id_cia}</IdCia>\n"
             f"<Usuario>{user}</Usuario>\n"
             f"<Clave>{clave}</Clave>\n"
@@ -29,7 +29,6 @@ def generate_xml(id_cia, user, clave, lines):
         print(f"XML content has been successfully saved to generated_data.xml")
     except Exception as e:
         print(f"Error saving XML data: {e}")
-
     try:
         # Call the SOAP service with the provided data and flag
         tipo_error = 0
@@ -49,7 +48,6 @@ class DataProcessor:
         Main processing function to generate XML data.
         """
         # Extract values for IdCia, Usuario, Clave
-        print(" llegue acacaasdado[kd1pwk22w32")
         id_cia = self.config['IdCia']
         user = self.config['Usuario']
         clave = self.config['Clave']
@@ -88,8 +86,8 @@ class DataProcessor:
                 f"{format_text(document.ID_CO, 3)}"  # co
                 f"{format_text(document.ID_TIPO_DOCTO, 3)}"  # do_type
                 f"{generate_consecutive_number(consecutive_doc, 8)}"  # do_consecutive
-                f"{document.FECHA}"  # date
-                f"{format_text(' ', 15)}"  # third_party
+                f"{convert_date_to_custom_format(document.FECHA)}"  # date
+                f"{format_text(document.ID_TERCERO, 15)}"  # third_party
                 f"061"  # class_do
                 f"1"  # state_do
                 f"0"  # print_state
@@ -105,10 +103,10 @@ class DataProcessor:
                 f"{format_text(' ', 15)}"  # transporter_code
                 f"{format_text(' ', 3)}"  # branch_tra_code
                 f"{format_text(' ', 15)}"  # person_code
-                f"{format_text(' ', 15)}"  # person_name
+                f"{format_text(' ', 50)}"  # person_name
                 f"{format_text(' ', 15)}"  # person_identification
                 f"{format_text(' ', 30)}"  # guide
-                f"{generate_consecutive_number(consecutive_doc, 15)}"  # boxes
+                f"{format_number(0,15)}"  # boxes
                 f"000000000000000.0000"  # weight
                 f"000000000000000.0000"  # volume
                 f"000000000000000.0000"  # insured_value
@@ -128,14 +126,14 @@ class DataProcessor:
         for movement in self.request_data.MOVIMIENTO:
             formatted_string_mov = (
                 f"{generate_consecutive_number(consecutive_file, 7)}"  # register_number
-                f"0450"  # type_register
+                f"0470"  # type_register
                 f"00"  # subtype
-                f"07"  # version
+                f"06"  # version
                 f"001"  # company
                 f"{format_text(movement.ID_CO, 3)}"  # co
                 f"{format_text(movement.ID_TIPO_DOCTO, 3)}"  # do_type
                 f"{generate_consecutive_number(consecutive_doc, 8)}"  # do_consecutive
-                f"{generate_consecutive_number(consecutive_mov, 8)}"  # register_consecutive
+                f"{generate_consecutive_number(consecutive_mov, 10)}"  # register_consecutive
                 f"{format_text(' ', 55)}"  # empty spaces 
                 f"{format_text(movement.ID_BODEGA, 5)}"  # warehouse
                 f"{format_text(' ', 10)}"  # location
@@ -147,22 +145,22 @@ class DataProcessor:
                 f"{format_text(movement.ID_CCOSTO_MOVTO, 15)}"  # cost_center_movement
                 f"{format_text(' ', 15)}"  # project
                 f"{format_text(movement.ID_UNIDAD_MEDIDA, 4)}"  # measury_unit
-                f"{format_number(movement.CANT_BASE)}"  # amount_base
-                f"000000000000000.0000"  # additional_amount
-                f"{format_number(movement.COSTO_PROM_UNI)}"  # unity_price
+                f"{format_number(movement.CANT_BASE,20)}"  # amount_base
+                f"{format_number(1,20)}" # additional_amount
+                f"{format_number(movement.COSTO_PROM_UNI,20)}"  # unity_price
                 f"{format_text(movement.NOTAS, 255)}"  # notes
                 f"{format_text(movement.DESC_VARIBLE, 2000)}"  # description
                 f"{format_text(' ', 40)}"  # item_description
                 f"{format_text(movement.UM_INVENTARIO, 4)}"  # measure_unit
                 f"{format_text(' ', 10)}"  # entry_location
                 f"{format_text(' ', 15)}"  # entry_lot
-                f"{generate_consecutive_number(movement.ID_ITEM, 8)}"  # item
+                f"{generate_consecutive_number(movement.ID_ITEM, 7)}"  # item
                 f"{format_text(' ', 50)}"  # item_reference
                 f"{format_text(' ', 20)}"  # barcode
                 f"{format_text(' ', 20)}"  # extension_1
                 f"{format_text(' ', 20)}"  # extension_2
-                f"{format_text(movement.UN, 20)}"  # business_unit
-                f"00000000"  # rowid
+                f"{format_text(movement.ID_UN, 20)}"  # business_unit
+                f"{generate_consecutive_number(0, 8)}"  # do_consecutive_empty # rowid
             )
             lines.append(f"<Linea>{formatted_string_mov}</Linea>")
             consecutive_file += 1
