@@ -39,8 +39,9 @@ def generate_xml(id_cia, user, clave, lines):
 
 
 class DataProcessor:
-    def __init__(self, request_data):
+    def __init__(self, request_data, param):
         self.request_data = request_data
+        self.param = param
         self.config = load_config()  # Load config
 
     def process(self):
@@ -76,6 +77,8 @@ class DataProcessor:
         Processes the document data and returns a list of formatted lines for the documents.
         """
         for document in self.request_data.DOCUMENTO:
+            class_do = "061" if self.extra_param else "062"
+            concept = "601" if self.extra_param else "602"
             formatted_string_doc = (
                 f"{generate_consecutive_number(consecutive_file, 7)}"  # register_number
                 f"0450"  # type_register
@@ -88,11 +91,11 @@ class DataProcessor:
                 f"{generate_consecutive_number(consecutive_doc, 8)}"  # do_consecutive
                 f"{convert_date_to_custom_format(document.FECHA)}"  # date
                 f"{format_text(document.ID_TERCERO, 15)}"  # third_party
-                f"061"  # class_do
+                f"{class_do}"  # class_do
                 f"1"  # state_do
                 f"0"  # print_state
                 f"{format_text(document.NOTAS, 255)}"  # notes
-                f"601"  # concept
+                f"{concept}"  # concept
                 f"{format_text(' ', 5)}"  # warehouse_outlet
                 f"{format_text(' ', 5)}"  # warehouse_entry
                 f"{format_text(document.DOCTO_ALTERNO, 15)}"  # alternate_document
@@ -124,6 +127,7 @@ class DataProcessor:
         """
         consecutive_mov = 1
         for movement in self.request_data.MOVIMIENTO:
+            concept = "601" if self.extra_param else "602"
             formatted_string_mov = (
                 f"{generate_consecutive_number(consecutive_file, 7)}"  # register_number
                 f"0470"  # type_register
@@ -138,7 +142,7 @@ class DataProcessor:
                 f"{format_text(movement.ID_BODEGA, 5)}"  # warehouse
                 f"{format_text(' ', 10)}"  # location
                 f"{format_text(' ', 15)}"  # lot
-                f"601"  # concept
+                f"{concept}"  # concept
                 f"{format_text(movement.ID_MOTIVO, 2)}"  # reason
                 f"{format_text(movement.ID_CO_MOVTO, 3)}"  # co_movement
                 f"{format_text(' ', 2)}"  # empty spaces 
