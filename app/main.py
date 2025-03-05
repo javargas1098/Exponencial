@@ -44,7 +44,7 @@ async def process_data_endpoint(request_data: RequestData):
     
     
 @app.get("/health_check")
-async def health_check(request_data: RequestData):
+async def health_check():
     """
     Endpoint to process request data and return an XML response.
     """

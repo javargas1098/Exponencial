@@ -4,7 +4,6 @@ services:
   plexa-integrator:
     build: .
     container_name: plexa-integrator
-    network_mode: "host"
     ports:
       - "8000:8000"
     volumes:
