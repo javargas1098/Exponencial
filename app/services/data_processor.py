@@ -77,8 +77,8 @@ class DataProcessor:
         Processes the document data and returns a list of formatted lines for the documents.
         """
         for document in self.request_data.DOCUMENTO:
-            class_do = "061" if self.extra_param else "062"
-            concept = "601" if self.extra_param else "602"
+            class_do = "061" if self.param else "062"
+            concept = "601" if self.param else "602"
             formatted_string_doc = (
                 f"{generate_consecutive_number(consecutive_file, 7)}"  # register_number
                 f"0450"  # type_register
@@ -127,7 +127,7 @@ class DataProcessor:
         """
         consecutive_mov = 1
         for movement in self.request_data.MOVIMIENTO:
-            concept = "601" if self.extra_param else "602"
+            concept = "601" if self.param else "602"
             formatted_string_mov = (
                 f"{generate_consecutive_number(consecutive_file, 7)}"  # register_number
                 f"0470"  # type_register
