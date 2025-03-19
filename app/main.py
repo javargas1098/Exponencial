@@ -3,13 +3,13 @@ from app.models import RequestData
 from app.services.data_processor import DataProcessor
 
 # Initialize FastAPI app
-app = FastAPI()
+app = FastAPI(title="Exponencial API", description="API for Processing Data", version="1.0.0")
 
-# POST endpoint to process data and return XML response
+# POST endpoint to process data inputs
 @app.post("/process_data_inputs")
-async def process_data_endpoint(request_data: RequestData):
+async def process_data_inputs(request_data: RequestData):
     """
-    Endpoint to process request data and return an XML response.
+    Endpoint to process input data and return an XML response.
     """
     # Create DataProcessor instance and process the data
     
@@ -23,11 +23,12 @@ async def process_data_endpoint(request_data: RequestData):
         return {"status": "success", "xml_response": xml_content}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
+# POST endpoint to process data outputs   
 @app.post("/process_data_outputs")
-async def process_data_endpoint(request_data: RequestData):
+async def process_data_outputs(request_data: RequestData):
     """
-    Endpoint to process request data and return an XML response.
+    Endpoint to process output  data and return an XML response.
     """
     # Create DataProcessor instance and process the data
     
@@ -42,13 +43,11 @@ async def process_data_endpoint(request_data: RequestData):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-    
+
+# Health check endpoint   
 @app.get("/health_check")
 async def health_check():
     """
-    Endpoint to process request data and return an XML response.
+    Check API health status.
     """
-    try:
-        return {"status": "success", "xml_response":"successfull"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    return {"status": "success", "message": "Service is running"}
